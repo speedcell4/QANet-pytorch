@@ -228,9 +228,10 @@ def train_entry(config):
     optimizer = optim.Adam(lr=lr, betas=(0.8, 0.999), eps=1e-7, weight_decay=3e-7, params=parameters)
     # optimizer = optim.SparseAdam(lr=lr, betas=(0.8, 0.999), eps=1e-7, params=parameters)
     cr = lr / math.log2(lr_warm_up_num)
-    scheduler = optim.lr_scheduler.LambdaLR(
-        optimizer,
-        lr_lambda=lambda ee: cr * math.log2(ee + 1) if ee < lr_warm_up_num else lr)
+    # scheduler = optim.lr_scheduler.LambdaLR(
+    #     optimizer,
+    #     lr_lambda=lambda ee: cr * math.log2(ee + 1) if ee < lr_warm_up_num else lr)
+    scheduler = None
     L = config.checkpoint
     N = config.num_steps
     best_f1 = 0
@@ -240,13 +241,13 @@ def train_entry(config):
     for iter in range(0, N, L):
         train(model, optimizer, scheduler, train_dataset, iter, L)
         metrics = test(model, train_dataset, train_eval_file)
-        if iter + L >= lr_warm_up_num - 1 and unused:
-            optimizer.param_groups[0]['initial_lr'] = lr
-            scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.9999)
-            unused = False
+        # if iter + L >= lr_warm_up_num - 1 and unused:
+        #     optimizer.param_groups[0]['initial_lr'] = lr
+        #     scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.9999)
+        #     unused = False
         if config.debug:
             print_weight(model, 5, iter + L)
-        print("Learning rate: {}".format(scheduler.get_lr()))
+        # print("Learning rate: {}".format(scheduler.get_lr()))
         dev_f1 = metrics["f1"]
         dev_em = metrics["exact_match"]
         if dev_f1 < best_f1 and dev_em < best_em:
