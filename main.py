@@ -240,7 +240,7 @@ def train_entry(config):
     unused = True
     for iter in range(0, N, L):
         train(model, optimizer, scheduler, train_dataset, iter, L)
-        metrics = test(model, train_dataset, train_eval_file)
+        metrics = test(model, dev_dataset, train_eval_file)
         # if iter + L >= lr_warm_up_num - 1 and unused:
         #     optimizer.param_groups[0]['initial_lr'] = lr
         #     scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.9999)
