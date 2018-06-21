@@ -245,7 +245,7 @@ def train_entry(config):
             scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.9999)
             unused = False
         if config.debug:
-            debug(model, 5, iter + L)
+            print_weight(model, 5, iter + L)
         print("Learning rate: {}".format(scheduler.get_lr()))
         dev_f1 = metrics["f1"]
         dev_em = metrics["exact_match"]
