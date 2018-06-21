@@ -244,8 +244,8 @@ def train_entry(config):
             optimizer.param_groups[0]['initial_lr'] = lr
             scheduler = optim.lr_scheduler.ExponentialLR(optimizer, 0.9999)
             unused = False
-        if config.print_weight:
-            print_weight(model, 5, iter + L)
+        if config.debug:
+            debug(model, 5, iter + L)
         print("Learning rate: {}".format(scheduler.get_lr()))
         dev_f1 = metrics["f1"]
         dev_em = metrics["exact_match"]
@@ -277,7 +277,7 @@ def main(_):
     elif config.mode == "data":
         preproc(config)
     elif config.mode == "debug":
-        config.print_weight = True
+        config.debug = True
         config.batch_size = 2
         config.num_steps = 32
         config.val_num_batches = 2
