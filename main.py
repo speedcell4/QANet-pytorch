@@ -158,9 +158,9 @@ def test(model, dataset, eval_file):
     model.eval()
     answer_dict = {}
     losses = []
-    num_batches = config.val_num_batches
+    num_batches = len(dataset)
     with torch.no_grad():
-        for i in tqdm(random.sample(range(0, len(dataset)), num_batches), total=num_batches):
+        for i in tqdm(range(num_batches), total=num_batches):
             Cwid, Ccid, Qwid, Qcid, y1, y2, ids = dataset[i]
             Cwid, Ccid, Qwid, Qcid = Cwid.to(device), Ccid.to(device), Qwid.to(device), Qcid.to(device)
             p1, p2 = model(Cwid, Ccid, Qwid, Qcid)
