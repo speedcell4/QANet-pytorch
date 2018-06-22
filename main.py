@@ -20,6 +20,10 @@ from torch.utils.data import Dataset
 Some functions are from the official evaluation script.
 '''
 
+frame = None
+p1x = None
+p2x = None
+
 
 class SQuADDataset(Dataset):
     def __init__(self, npz_file, num_steps, batch_size):
@@ -140,9 +144,12 @@ def train(model, optimizer, scheduler, dataset, start, length):
     losses = []
     for i in tqdm(range(start, length + start), total=length):
         optimizer.zero_grad()
-        Cwid, Ccid, Qwid, Qcid, y1, y2, ids = dataset[i]
+        global frame
+        global p1x
+        global p2x
+        frame = Cwid, Ccid, Qwid, Qcid, y1, y2, ids = dataset[i]
         Cwid, Ccid, Qwid, Qcid = Cwid.to(device), Ccid.to(device), Qwid.to(device), Qcid.to(device)
-        p1, p2 = model(Cwid, Ccid, Qwid, Qcid)
+        p1x, p2x = p1, p2 = model(Cwid, Ccid, Qwid, Qcid)
         y1, y2 = y1.to(device), y2.to(device)
         loss1 = F.nll_loss(p1, y1, size_average=True)
         loss2 = F.nll_loss(p2, y2, size_average=True)

@@ -120,12 +120,12 @@ class Embedding(nn.Module):
 
     def forward(self, ch_emb, wd_emb):
         ch_emb = ch_emb.permute(0, 3, 1, 2)
-        ch_emb = F.dropout(ch_emb, p=dropout_char, training=self.training)
+        # ch_emb = F.dropout(ch_emb, p=dropout_char, training=self.training)
         ch_emb = self.conv2d(ch_emb)
         ch_emb = F.relu(ch_emb)
         ch_emb, _ = torch.max(ch_emb, dim=3)
         ch_emb = ch_emb.squeeze()
-        wd_emb = F.dropout(wd_emb, p=dropout, training=self.training)
+        # wd_emb = F.dropout(wd_emb, p=dropout, training=self.training)
         wd_emb = wd_emb.transpose(1, 2)
         emb = torch.cat([ch_emb, wd_emb], dim=1)
         emb = self.conv1d(emb)
@@ -153,20 +153,20 @@ class EncoderBlock(nn.Module):
             out = conv(out)
             out = F.relu(out)
             out = out + res
-            if (i + 1) % 2 == 0:
-                p_drop = dropout * (i+1) / self.L
-                out = F.dropout(out, p=p_drop, training=self.training)
+            # if (i + 1) % 2 == 0:
+            #     p_drop = dropout * (i+1) / self.L
+            #     out = F.dropout(out, p=p_drop, training=self.training)
             res = out
             out = self.norms[i](out)
         out = self.self_att(out, mask)
         out = out + res
-        out = F.dropout(out, p=dropout, training=self.training)
+        # out = F.dropout(out, p=dropout, training=self.training)
         res = out
         out = self.norme(out)
         out = self.fc(out.transpose(1, 2)).transpose(1, 2)
         out = F.relu(out)
         out = out + res
-        out = F.dropout(out, p=dropout, training=self.training)
+        # out = F.dropout(out, p=dropout, training=self.training)
         return out
 
 
@@ -197,7 +197,7 @@ class CQAttention(nn.Module):
         A = torch.bmm(S1, Q)
         B = torch.bmm(torch.bmm(S1, S2.transpose(1, 2)), C)
         out = torch.cat([C, A, torch.mul(C, A), torch.mul(C, B)], dim=2)
-        out = F.dropout(out, p=dropout, training=self.training)
+        # out = F.dropout(out, p=dropout, training=self.training)
         return out.transpose(1, 2)
 
 
