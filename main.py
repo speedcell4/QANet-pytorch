@@ -142,7 +142,7 @@ def train(model, optimizer, scheduler, dataset, start, length):
         optimizer.zero_grad()
         Cwid, Ccid, Qwid, Qcid, y1, y2, ids = dataset[i]
         Cwid, Ccid, Qwid, Qcid = Cwid.to(device), Ccid.to(device), Qwid.to(device), Qcid.to(device)
-        p1, p2, mask = model(Cwid, Ccid, Qwid, Qcid)
+        p1, p2 = model(Cwid, Ccid, Qwid, Qcid)
         y1, y2 = y1.to(device), y2.to(device)
         loss1 = F.nll_loss(p1, y1, size_average=True)
         loss2 = F.nll_loss(p2, y2, size_average=True)
@@ -163,7 +163,7 @@ def test(model, dataset, eval_file):
         for i in tqdm(range(num_batches), total=num_batches):
             Cwid, Ccid, Qwid, Qcid, y1, y2, ids = dataset[i]
             Cwid, Ccid, Qwid, Qcid = Cwid.to(device), Ccid.to(device), Qwid.to(device), Qcid.to(device)
-            p1, p2, mask = model(Cwid, Ccid, Qwid, Qcid)
+            p1, p2 = model(Cwid, Ccid, Qwid, Qcid)
             y1, y2 = y1.to(device), y2.to(device)
             loss1 = F.nll_loss(p1, y1, size_average=True)
             loss2 = F.nll_loss(p2, y2, size_average=True)
