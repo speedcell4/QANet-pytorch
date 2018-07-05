@@ -155,6 +155,7 @@ def train(model, optimizer, scheduler, dataset, start, length):
     loss_avg = np.mean(losses)
     print("STEP {:8d} loss {:8f}\n".format(i + 1, loss_avg))
 
+
 def valid(model, dataset, eval_file):
     model.eval()
     answer_dict = {}
@@ -181,6 +182,7 @@ def valid(model, dataset, eval_file):
     metrics = evaluate(eval_file, answer_dict)
     metrics["loss"] = loss
     print("VALID loss {:8f} F1 {:8f} EM {:8f}\n".format(loss, metrics["f1"], metrics["exact_match"]))
+
 
 def test(model, dataset, eval_file):
     model.eval()
@@ -237,7 +239,8 @@ def train_entry(config):
 
     model = QANet(word_mat, char_mat).to(device)
     parameters = filter(lambda param: param.requires_grad, model.parameters())
-    optimizer = optim.Adam(lr=base_lr, betas=(config.beta1, config.beta2), eps=1e-7, weight_decay=3e-7, params=parameters)
+    optimizer = optim.Adam(lr=base_lr, betas=(config.beta1, config.beta2), eps=1e-7, weight_decay=3e-7,
+                           params=parameters)
     cr = lr / math.log2(lr_warm_up_num)
     scheduler = optim.lr_scheduler.LambdaLR(
         optimizer,
